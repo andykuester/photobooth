@@ -1,29 +1,19 @@
 #!/bin/bash
-C="...................................................."
-function log {
-  printf "%.50s" "$1 $C"
-  printf "%.50s" "$1 $C" >> logfile
-}
 
-function printOK {
-  printf "[ %s ]  \n" "OK"
-  printf "[ %s ]  \n" "OK" >> logfile
-}
+if [ -f "basic" ]
+then
+  source basic
+else
+  printf "\x1b[31m %s \\x1b[0m %s \n" "Failed" "- basic function not found"
+  exit 1
+fi
 
-function printFailed {
-  printf "[\x1b[31m %s \\x1b[0m] \n" "FAILED"
-  printf "[\x1b[31m %s \\x1b[0m] \n" "FAILED" >> logfile
-}
-function check {
+# Reset Error and Logfile
+printf "" > logfile
+printf "" > error
 
-  if [ $1 -eq 0 ]
-  then
-     printOK
-  else
-     printFailed
-     exit 1
-  fi
-}
+
+echo "******    START PHOTOBOOTH     ******"
 
 log "Search old process"
 #Alle laufende Prozesse von gphoto beenden
@@ -44,12 +34,14 @@ fi
 # Setzt den Kamera Einstellungen 
 
 log "set camera capturemode "
-gphoto2 --set-config /main/capturesettings/capturemode="1" >/dev/null 2>error
+gphoto2 --set-config /main/capturesettings/capturemode="0" >/dev/null 2>error
 check $?
 
 
 # Darstellung eines schwarzen Bildes im Vollbildmodus (vermutlich möchte niemand das Terminal sehen)
-#eog -f -w blackscreen.png &
+log "diaplay black screen"
+eog -f -w blackscreen.png & >logfile 2>error
+check $?
 
 # Generierung eines QRCodes
 #qrencode -o qrcode.png -s 10 'URL: www.mach-mal-nen.de'
@@ -57,5 +49,5 @@ check $?
 # Aktivierung des Tethering-Modus der Kamera und Warten auf Bilder
 log "activate tethered mode"
 check 0
-gphoto2 --capture-tethered --hook-script=test-hook.sh --filename="slideshow/photo_booth-%Y%m%d-%H%M%S.%C" --force-overwrite >>/dev/null 2>error
+gphoto2 --capture-tethered --hook-script=test-hook.sh --filename="slideshow/photo_booth-%Y%m%d-%H%M%S.%C" --force-overwrite 2>error 
 

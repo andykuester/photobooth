@@ -1,34 +1,40 @@
 #!/bin/bash
-self=`basename $0`
-echo "action  = $ACTION"
-echo "argument= $ARGUMENT"
+if [ -f "basic" ]
+then
+  source basic
+else
+  printf "\x1b[31m %s \\x1b[0m %s \n" "Failed" "- basic function not found"
+  exit 1
+fi
+self=$(basename $0)
 case "$ACTION" in
     init)
-	echo "$self: INIT"
+	log "init hook-script"
 	# exit 1 # non-null exit to make gphoto2 call fail
+        check 0
 	;;
     start)
-	echo "$self: START"
+        log "start hook-script"
+        check 0	
 	;;
     download)
-	echo "$self: DOWNLOAD to $ARGUMENT"
+        log "DOWNLOAD to $ARGUMENT"
 		# nach abgeschlossenem Download der Bilder
-
-		TYPE=`file --mime-type -b "$ARGUMENT"` # Typ des Bildes herausfinden
-	
-        if [ "$TYPE" = 'image/tiff' ]; then # Falls es sich um ein War-Foto handelt ...
-echo ""				#	./convertPicture.sh $ARGUMENT &
-        else 
+	#	TYPE=$(file --mime-type -b "$ARGUMENT") # Typ des Bildes herausfinden
+	check $?
+      #  if [ "$TYPE" = 'image/tiff' ]; then # Falls es sich um ein War-Foto handelt ...
+				#	./convertPicture.sh $ARGUMENT &
+#        else 
        # fuer das jpg-Bild
-echo ""
-					./startSlideshow.sh "$ARGUMENT" &
-
-        fi
+	./startSlideshow.sh "$ARGUMENT" &
+        disown
+        #fi
 
 
 	;;
     stop)
-	echo "$self: STOP"
+        log "STOP PHOTOBOOTH"
+        check 0	
 	;;
     *)
 	echo "$self: Unknown action: $ACTION"
