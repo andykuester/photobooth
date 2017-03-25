@@ -1,5 +1,7 @@
+#!/bin/bash
 self=`basename $0`
-
+echo "action  = $ACTION"
+echo "argument= $ARGUMENT"
 case "$ACTION" in
     init)
 	echo "$self: INIT"
@@ -15,8 +17,10 @@ case "$ACTION" in
 		TYPE=`file --mime-type -b "$ARGUMENT"` # Typ des Bildes herausfinden
 	
         if [ "$TYPE" = 'image/tiff' ]; then # Falls es sich um ein War-Foto handelt ...
-					./convertPicture.sh $ARGUMENT &
-        else # fuer das jpg-Bild
+echo ""				#	./convertPicture.sh $ARGUMENT &
+        else 
+       # fuer das jpg-Bild
+echo ""
 					./startSlideshow.sh "$ARGUMENT" &
 
         fi
