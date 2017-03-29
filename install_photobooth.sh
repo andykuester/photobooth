@@ -27,7 +27,7 @@ install_package "photoprint"
 install_package "qrencode"
 install_package "imagemagick"
 install_package "feh"
-
+#install_package "apache2"
 
 createDir "slideshow"
 

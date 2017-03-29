@@ -33,10 +33,12 @@ fi
 
 # Setzt den Kamera Einstellungen 
 
-log "set camera capturemode "
-gphoto2 --set-config /main/capturesettings/capturemode="0" >/dev/null 2>error
+log "set capturemode delay remote "
+gphoto2 --set-config /main/capturesettings/capturemode="4" >/dev/null 2>error
 check $?
-
+log "set face tracking"
+gphoto2 --set-config /main/capturesettings/liveviewafmode="0" >/dev/null 2>error
+check $?
 
 # Darstellung eines schwarzen Bildes im Vollbildmodus (vermutlich möchte niemand das Terminal sehen)
 log "diaplay black screen"
