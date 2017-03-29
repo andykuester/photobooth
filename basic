@@ -1,0 +1,49 @@
+#!/bin/bash
+C="........................................................."
+function log {
+  printf "%.60s" "$1 $C"
+  printf "%.60s" "$1 $C" >> logfile
+}
+
+function printOK {
+  printf "[ %s ]  \n" "OK"
+  printf "[ %s ]  \n" "OK" >> logfile
+}
+
+function printFailed {
+  printf "[\x1b[31m %s \\x1b[0m] \n" "FAILED"
+  printf "[\x1b[31m %s \\x1b[0m] \n" "FAILED" >> logfile
+}
+function check {
+
+  if [ $1 -eq 0 ]
+  then
+     printOK
+  else
+     printFailed
+     
+  fi
+}
+
+function install_package {
+
+  printf "%.60s" "install $1 $C"
+  apt-get install -y "$1" >>/dev/null 2>/dev/null
+  check $?
+
+}
+
+function createDir {
+
+  log "create dir $1"
+  if [ -d "$1" ]
+  then
+    printOK
+  else
+    mkdir "$1"
+    check $?
+  fi
+
+}
+
+
