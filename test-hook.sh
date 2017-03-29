@@ -18,17 +18,38 @@ case "$ACTION" in
         check 0	
 	;;
     download)
-        log "DOWNLOAD to $ARGUMENT"
-		# nach abgeschlossenem Download der Bilder
-	#	TYPE=$(file --mime-type -b "$ARGUMENT") # Typ des Bildes herausfinden
-	check $?
-      #  if [ "$TYPE" = 'image/tiff' ]; then # Falls es sich um ein War-Foto handelt ...
-				#	./convertPicture.sh $ARGUMENT &
-#        else 
-       # fuer das jpg-Bild
-	./startSlideshow.sh "$ARGUMENT" &
-        disown
-        #fi
+	# nach abgeschlossenem Download der Bilder
+	TYPE=$(file --mime-type -b "$ARGUMENT") # Typ des Bildes herausfinden
+	
+        if [ "$TYPE" = 'image/jpeg' ]; then 
+           
+           # save img into dropbox folder
+           dropbox="/home/andy/Dropbox/002_privat/001_Dani&Andy/001_hochzeit/photobooth"
+           if [ -d "$dropbox" ];then
+               log "copy $ARGUMENT to dropbox"
+               cp "$ARGUMENT" "$dropbox/" >/dev/null 2>error
+               check $?
+               log "chown image"
+               chown andy:andy "$dropbox/$ARGUMENT"
+               check $?
+               log "chmod image"
+               chmod 775 "$dropbox/$ARGUMENT"
+               check $?
+           fi
+           folder="/opt/photobooth/slideshow"
+           log "check slideshow folder"
+           if [ -d "$folder" ];then
+              check 0
+              log "move $ARGUMENT to slideshow"
+              mv "$ARGUMENT" "/opt/photobooth/slideshow/"
+              check $?
+
+           else
+              check 1
+           fi
+           ./startSlideshow.sh "slideshow/$ARGUMENT" &
+           
+        fi
 
 
 	;;

@@ -51,5 +51,5 @@ check $?
 # Aktivierung des Tethering-Modus der Kamera und Warten auf Bilder
 log "activate tethered mode"
 check 0
-gphoto2 --capture-tethered --hook-script=test-hook.sh --filename="slideshow/photo_booth-%Y%m%d-%H%M%S.%C" --force-overwrite 2>error 
+gphoto2 --capture-tethered --hook-script=test-hook.sh --filename="photo_booth-%Y%m%d-%H%M%S.%C" --force-overwrite 2>error 
 
